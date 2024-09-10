@@ -15,14 +15,14 @@ def get_oauth_token():
     auth = "Basic " + base64.b64encode(message.encode("ascii")).decode("ascii")   # Encode the message
 
     headers_dic = {"Authorization" : auth,
-                   "Content-Type" : "application/x-www-form-urlencoded;charset=UTF-8"}   # Define our headers
+                "Content-Type" : "application/x-www-form-urlencoded;charset=UTF-8"}   # Define our headers
 
     params_dic = {"grant_type" : "client_credentials",   # Define the request params
-                  "scope" : "read"}
+                "scope" : "read"}
 
     r = rq.post("https://api.idealista.com/oauth/token",   # Perform the request with the api url, headers and params
-                      headers = headers_dic,
-                      params = params_dic)
+                    headers = headers_dic,
+                    params = params_dic)
 
     token = json.loads(r.text)['access_token']   # Obtain the personalised token, as a json
 
@@ -30,35 +30,35 @@ def get_oauth_token():
 
 # This are the params we will use to filter our search
 
-base_url = 'https://api.idealista.com/3.5/'     # Base search url
+base_url = 'https://api.idealista.com/3.5/es/search'    # Base search url
 country = 'es'     # Search country (es, it, pt)                          
 language = 'es'     # Search language (es, it, pt, en, ca) 
 max_items = '50'     # Max items per call, the maximum set by Idealista is 50
 operation = 'sale'     # Kind of operation (sale, rent) 
 property_type = 'homes'     # Type of property (homes, offices, premises, garages, bedrooms)
-order = 'priceDown'     # Order of the listings, consult documentation for all the available orders 
+order = ''     # Order of the listings, consult documentation for all the available orders 
 center = '41.65606,-0.87734'     # Coordinates of the search center
-distance = '3000'     # Max distance from the center
+distance = '4000'     # Max distance from the center
 sort = 'desc'     # How to sort the found items
 bankOffer = 'false'     # If the owner is a bank
-maxprice = '750'     # Max price of the listings
+# maxprice = '750'     # Max price of the listings
 
 def define_search_url():
     '''
     This function will combine our params with the url, in order to create our own search url
     '''
     url = (base_url +      
-           country +
-           '/search?operation=' + operation +
-           '&maxItems=' + max_items +
-           #'&order=' + order +
-           '&center=' + center +
-           '&distance=' + distance +
-           '&propertyType=' + property_type +
-           '&sort=' + sort + 
-           '&numPage=%s' +
-           #'&maxPrice=' + maxprice +
-           '&language=' + language)
+        country +
+        '/search?operation=' + operation +
+        '&maxItems=' + max_items +
+        #'&order=' + order +
+        '&center=' + center +
+        '&distance=' + distance +
+        '&propertyType=' + property_type +
+        '&sort=' + sort + 
+        '&numPage=%s' +
+        #'&maxPrice=' + maxprice +
+        '&language=' + language)
     
     return url
 
@@ -72,7 +72,7 @@ def search_api(url):
     token = get_oauth_token()   #  Get the personalised token
 
     headers = {'Content-Type': 'Content-Type: multipart/form-data;',   # Define the search headers 
-               'Authorization' : 'Bearer ' + token}
+            'Authorization' : 'Bearer ' + token}
 
     content = rq.post(url, headers = headers)   # Return the content from the request
 
